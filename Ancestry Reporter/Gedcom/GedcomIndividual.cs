@@ -24,6 +24,8 @@ namespace GedcomLib
         public List<string> Notes;
         public List<string> Sources;
 
+		public bool AlreadyIncluded;
+
         public GedcomIndividual(BinaryReader reader)
         {
             ReadFromStream(reader);
@@ -49,6 +51,7 @@ namespace GedcomLib
             SpouseFamilyId = "";
             Notes = new List<string>();
             Sources = new List<string>();
+			AlreadyIncluded = false;
         }
 
         public void WriteToStream(BinaryWriter writer)

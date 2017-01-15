@@ -115,7 +115,7 @@ namespace Ancestry_Reporter.Reports
 			return string.Empty;
 		}
 
-		public static string GenerateName(GedcomIndividual individual)
+		public static string GenerateName(GedcomIndividual individual, bool includeDates)
 		{
 			string name = individual.GivenName;
 			if (!string.IsNullOrEmpty(individual.Prefix))
@@ -124,8 +124,30 @@ namespace Ancestry_Reporter.Reports
 				name += " " + individual.Surname;
 			if (!string.IsNullOrEmpty(individual.Suffix))
 				name += " (" + individual.Suffix + ")";
+
+			if (includeDates)
+			{
+				string born = AncestryProcessing.ProcessDate(individual.BirthDate, false);
+				string bornDate = "";
+				if (born != "?" || !string.IsNullOrEmpty(individual.BirthPlace.Trim()))
+					bornDate = string.Format("b. {0} {1}", born, individual.BirthPlace).Trim();
+				string died = AncestryProcessing.ProcessDate(individual.DiedDate, false);
+				string diedDate = "";
+				if (died != "?" || !string.IsNullOrEmpty(individual.DiedPlace.Trim()))
+					diedDate = string.Format("d. {0} {1}", died, individual.DiedPlace).Trim();
+				if (!string.IsNullOrEmpty(bornDate) || !string.IsNullOrEmpty(diedDate))
+				{
+					name += " (";
+					if (!string.IsNullOrEmpty(bornDate))
+						name += bornDate;
+					if (!string.IsNullOrEmpty(bornDate) && !string.IsNullOrEmpty(diedDate))
+						name += " ";
+					if (!string.IsNullOrEmpty(diedDate))
+						name += diedDate;
+					name += ")";
+				}
+			}
 			return name;
 		}
-
 	}
 }

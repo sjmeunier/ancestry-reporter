@@ -14,6 +14,9 @@ namespace Ancestry_Reporter
 		AbridgedLeafAncestor,
 		[Description("Generation Summary")]
 		GenerationSummary,
-
+		[Description("Descendant")]
+		Descendant,
+		[Description("Ancestor Place Report")]
+		Place
 	}
 }

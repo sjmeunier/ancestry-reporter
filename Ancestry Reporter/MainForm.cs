@@ -33,7 +33,9 @@ namespace Ancestry_Reporter
 				new { Value = ReportType.AbridgedAncestry, Text = Extensions.GetDescription<ReportType>(ReportType.AbridgedAncestry) },
 				new { Value = ReportType.LeafAncestor, Text = Extensions.GetDescription<ReportType>(ReportType.LeafAncestor) },
 				new { Value = ReportType.AbridgedLeafAncestor, Text = Extensions.GetDescription<ReportType>(ReportType.AbridgedLeafAncestor) },
-				new { Value = ReportType.GenerationSummary, Text = Extensions.GetDescription<ReportType>(ReportType.GenerationSummary) }
+				new { Value = ReportType.GenerationSummary, Text = Extensions.GetDescription<ReportType>(ReportType.GenerationSummary) },
+				new { Value = ReportType.Descendant, Text = Extensions.GetDescription<ReportType>(ReportType.Descendant) },
+				new { Value = ReportType.Place, Text = Extensions.GetDescription<ReportType>(ReportType.Place) }
 			};
 
 			cboReportType.DisplayMember = "Text";
@@ -114,12 +116,18 @@ namespace Ancestry_Reporter
 				case ReportType.GenerationSummary:
 					report = new GenerationCountReport();
 					break;
+				case ReportType.Descendant:
+					report = new DescendantReport();
+					break;
+				case ReportType.Place:
+					report = new PlaceReport();
+					break;
 				default:
 					report = new FullAncestryReport();
 					break;
 			}
 
-			report.GenerateAncestryReport(txtRootPerson.Text, Int32.Parse(txtMaxDepth.Text), txtOutputPath.Text, parser.gedcomIndividuals, parser.gedcomFamilies);
+			report.GenerateReport(txtRootPerson.Text, Int32.Parse(txtMaxDepth.Text), txtOutputPath.Text, parser.gedcomIndividuals, parser.gedcomFamilies);
 
 			lblStatus.Text = "Finished generating report.";
 			Application.DoEvents();

@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Ancestry_Reporter.Reports
 {
-	public class NameOnlyAncestryReport : IBaseReport
+	public class PlaceReport : IBaseReport
 	{
 		public Dictionary<string, GedcomIndividual> gedcomIndividuals;
 		public Dictionary<string, GedcomFamily> gedcomFamilies;
@@ -15,11 +15,12 @@ namespace Ancestry_Reporter.Reports
 		public Dictionary<string, AncestorIndividual> ancestors = new Dictionary<string, AncestorIndividual>();
 
 		private Dictionary<int, List<AncestorIndividual>> optimizedAncestors = new Dictionary<int, List<AncestorIndividual>>();
+		private List<string> places = new List<string>();
 
 		private int highestDepth = 0;
 		private int maxDepth = 0;
 
-		public NameOnlyAncestryReport()
+		public PlaceReport()
 		{
 
 		}
@@ -30,8 +31,10 @@ namespace Ancestry_Reporter.Reports
 			this.gedcomFamilies = gedcomFamilies;
 			this.gedcomIndividuals = gedcomIndividuals;
 			ProcessAncestor("@" + rootIndividualId + "@", string.Empty, 1, 0);
-			CalculateSummaryData();
-			CalculateAncestorByGenerationDictionary();
+			this.places.AddRange(this.ancestors.Values.Where(x => !string.IsNullOrEmpty(x.BirthPlace.Trim())).Select(x => x.BirthPlace).Distinct().ToList());
+			this.places.AddRange(this.ancestors.Values.Where(x => !string.IsNullOrEmpty(x.DiedPlace.Trim())).Select(x => x.DiedPlace).Distinct().ToList());
+			this.places = this.places.Distinct().ToList();
+
 			OutputReport("@" + rootIndividualId + "@", outputPath);
 		}
 
@@ -40,36 +43,29 @@ namespace Ancestry_Reporter.Reports
 			using (StreamWriter writer = new StreamWriter(outputPath))
 			{
 
-				writer.WriteLine(string.Format("Abridged Ancestry Report for {0}", ancestors[rootIndividialId].SummaryName));
+				writer.WriteLine(string.Format("Full Ancestry Report for {0}", ancestors[rootIndividialId].SummaryName));
 				writer.WriteLine(string.Format("Generated on {0}", DateTime.Now.ToShortDateString()));
 				writer.WriteLine(string.Format("Total ancestors in report {0}", ancestors.Count()));
 				writer.WriteLine();
-				for(int i = 0; i < this.highestDepth; i++)
+				foreach(string place in this.places.OrderBy(x => x))
 				{
 					writer.WriteLine("---------------------------------------------------");
 					writer.WriteLine("---------------------------------------------------");
-					writer.WriteLine(string.Format("Generation {0}", i + 1));
+					writer.WriteLine(string.Format("{0}", place));
 					writer.WriteLine("---------------------------------------------------");
-					writer.WriteLine("");
-					if (optimizedAncestors[i].Count > 0)
+					foreach(AncestorIndividual individual in this.ancestors.Values.Where(x => x.BirthPlace == place || x.DiedPlace == place))
 					{
-						foreach (var individual in optimizedAncestors[i])
-						{
-							writer.WriteLine(individual.FullSummary);
-						}
+						writer.WriteLine(AncestryProcessing.GenerateName(this.gedcomIndividuals[individual.Id], true));
 					}
+					writer.WriteLine("");
 				}
 			}
 		}
 
 		private void ProcessAncestor(string individualId, string childId, long ahnentafelNumber, int depth)
 		{
-			if (ancestors.ContainsKey(individualId))
-			{
-				IncrementAppearance(individualId, childId, ahnentafelNumber, depth);
-			}
-			else
-			{
+			if (!ancestors.ContainsKey(individualId))
+			{ 
 				highestDepth = Math.Max(depth, highestDepth);
 
 				AncestorIndividual individual = new AncestorIndividual(individualId);
@@ -109,63 +105,6 @@ namespace Ancestry_Reporter.Reports
 					if (!string.IsNullOrEmpty(individual.MotherId))
 						ProcessAncestor(individual.MotherId, individualId, 2 * ahnentafelNumber + 1, depth + 1);
 				}
-			}
-		}
-
-		private void IncrementAppearance(string individualId, string childId, long ahnentafelNumber, int depth)
-		{
-			if (ancestors.ContainsKey(individualId))
-			{
-				highestDepth = Math.Max(depth, highestDepth);
-
-				AncestorIndividual individual = ancestors[individualId];
-				individual.LowestGeneration = Math.Min(individual.LowestGeneration, depth);
-				if (depth > individual.HighestGeneration)
-				{
-					individual.AhnentafelNumber = ahnentafelNumber;
-				}
-				individual.AppearanceCount++;
-
-				ancestors[individualId] = individual;
-
-				if (!string.IsNullOrEmpty(individual.FatherId))
-					IncrementAppearance(individual.FatherId, individualId, 2 * ahnentafelNumber, depth + 1);
-
-				if (!string.IsNullOrEmpty(individual.MotherId))
-					IncrementAppearance(individual.MotherId, individualId, 2 * ahnentafelNumber + 1, depth + 1);
-
-			}
-		}
-
-		private void CalculateAncestorByGenerationDictionary()
-		{
-			for (int i = 0; i <= highestDepth; i++)
-			{
-				optimizedAncestors.Add(i, ancestors.Values.Where(x => x.HighestGeneration == i).ToList());
-			}
-		}
-
-
-		private void CalculateSummaryData()
-		{
-			List<string> keys = new List<string>(ancestors.Keys);
-			foreach (string individualId in keys)
-			{
-				AncestorIndividual individual = ancestors[individualId];
-
-				string name = individual.GivenName;
-				if (!string.IsNullOrEmpty(individual.Prefix))
-					name += " " + individual.Prefix;
-				if (!string.IsNullOrEmpty(individual.Surname))
-					name += " " + individual.Surname;
-				if (!string.IsNullOrEmpty(individual.Suffix))
-					name += " (" + individual.Suffix + ")";
-
-				name += " " + AncestryProcessing.GenerateBirthDeathDate(individual, true);
-				name += " (" + individualId + ")";
-				individual.FullSummary = name;
-
-				ancestors[individualId] = individual;
 			}
 		}
 

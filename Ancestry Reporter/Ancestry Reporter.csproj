@@ -64,6 +64,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\AncestryIndividual.cs" />
     <Compile Include="Reports\AncestryProcessing.cs" />
+    <Compile Include="Reports\DescendantReport.cs" />
+    <Compile Include="Reports\PlaceReport.cs" />
     <Compile Include="Reports\NameOnlyAncestryReport.cs" />
     <Compile Include="Reports\GenerationCountReport.cs" />
     <Compile Include="Reports\LeafNameOnlyAncestorReport.cs" />

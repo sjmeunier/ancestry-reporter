@@ -24,7 +24,7 @@ namespace Ancestry_Reporter.Reports
 
 		}
 
-		public void GenerateAncestryReport(string rootIndividualId, int maxDepth, string outputPath, Dictionary<string, GedcomIndividual> gedcomIndividuals, Dictionary<string, GedcomFamily> gedcomFamilies)
+		public void GenerateReport(string rootIndividualId, int maxDepth, string outputPath, Dictionary<string, GedcomIndividual> gedcomIndividuals, Dictionary<string, GedcomFamily> gedcomFamilies)
 		{
 			this.maxDepth = maxDepth;
 			this.gedcomFamilies = gedcomFamilies;

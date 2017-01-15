@@ -9,7 +9,7 @@ namespace Ancestry_Reporter.Reports
 {
 	public interface IBaseReport
 	{
-		void GenerateAncestryReport(string rootIndividualId, int maxDepth, string outputPath, Dictionary<string, GedcomIndividual> gedcomIndividuals, Dictionary<string, GedcomFamily> gedcomFamilies);
+		void GenerateReport(string rootIndividualId, int maxDepth, string outputPath, Dictionary<string, GedcomIndividual> gedcomIndividuals, Dictionary<string, GedcomFamily> gedcomFamilies);
 
 	}
 }
