@@ -35,7 +35,9 @@ namespace Ancestry_Reporter
 				new { Value = ReportType.AbridgedLeafAncestor, Text = Extensions.GetDescription<ReportType>(ReportType.AbridgedLeafAncestor) },
 				new { Value = ReportType.GenerationSummary, Text = Extensions.GetDescription<ReportType>(ReportType.GenerationSummary) },
 				new { Value = ReportType.Descendant, Text = Extensions.GetDescription<ReportType>(ReportType.Descendant) },
-				new { Value = ReportType.Place, Text = Extensions.GetDescription<ReportType>(ReportType.Place) }
+				new { Value = ReportType.Place, Text = Extensions.GetDescription<ReportType>(ReportType.Place) },
+				new { Value = ReportType.YDNA, Text = Extensions.GetDescription<ReportType>(ReportType.YDNA) },
+				new { Value = ReportType.MtDNA, Text = Extensions.GetDescription<ReportType>(ReportType.MtDNA) }
 			};
 
 			cboReportType.DisplayMember = "Text";
@@ -121,6 +123,12 @@ namespace Ancestry_Reporter
 					break;
 				case ReportType.Place:
 					report = new PlaceReport();
+					break;
+				case ReportType.YDNA:
+					report = new YDNAReport();
+					break;
+				case ReportType.MtDNA:
+					report = new MtDNAReport();
 					break;
 				default:
 					report = new FullAncestryReport();

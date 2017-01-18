@@ -17,6 +17,10 @@ namespace Ancestry_Reporter
 		[Description("Descendant")]
 		Descendant,
 		[Description("Ancestor Place Report")]
-		Place
+		Place,
+		[Description("Shared Y-DNA Report")]
+		YDNA,
+		[Description("Shared mt-DNA Report")]
+		MtDNA
 	}
 }
