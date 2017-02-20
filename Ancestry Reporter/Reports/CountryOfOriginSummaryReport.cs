@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Ancestry_Reporter.Reports
 {
-	public class PlaceReport : IBaseReport
+	public class CountryOfOriginSummaryReport : IBaseReport
 	{
 		public Dictionary<string, GedcomIndividual> gedcomIndividuals;
 		public Dictionary<string, GedcomFamily> gedcomFamilies;
@@ -20,7 +20,7 @@ namespace Ancestry_Reporter.Reports
 		private int highestDepth = 0;
 		private int maxDepth = 0;
 
-		public PlaceReport()
+		public CountryOfOriginSummaryReport()
 		{
 
 		}
@@ -31,8 +31,8 @@ namespace Ancestry_Reporter.Reports
 			this.gedcomFamilies = gedcomFamilies;
 			this.gedcomIndividuals = gedcomIndividuals;
 			ProcessAncestor("@" + rootIndividualId + "@", string.Empty, 1, 0);
-			this.places.AddRange(this.ancestors.Values.Where(x => !string.IsNullOrEmpty(x.BirthPlace.Trim())).Select(x => x.BirthPlace).Distinct().ToList());
-			this.places.AddRange(this.ancestors.Values.Where(x => !string.IsNullOrEmpty(x.DiedPlace.Trim())).Select(x => x.DiedPlace).Distinct().ToList());
+			this.places.AddRange(this.ancestors.Values.Where(x => !string.IsNullOrEmpty(x.BirthCountry.Trim())).Select(x => x.BirthCountry).Distinct().ToList());
+			this.places.AddRange(this.ancestors.Values.Where(x => !string.IsNullOrEmpty(x.DiedCountry.Trim())).Select(x => x.DiedCountry).Distinct().ToList());
 			this.places = this.places.Distinct().ToList();
 
 			OutputReport("@" + rootIndividualId + "@", outputPath);
@@ -43,21 +43,17 @@ namespace Ancestry_Reporter.Reports
 			using (StreamWriter writer = new StreamWriter(outputPath))
 			{
 
-				writer.WriteLine(string.Format("Place Name Report for {0}", ancestors[rootIndividialId].SummaryName));
+				writer.WriteLine(string.Format("Country of Origin Report for {0}", ancestors[rootIndividialId].SummaryName));
 				writer.WriteLine(string.Format("Generated on {0}", DateTime.Now.ToShortDateString()));
 				writer.WriteLine(string.Format("Total ancestors in report {0}", ancestors.Count()));
 				writer.WriteLine();
-				foreach(string place in this.places.OrderBy(x => x))
+                writer.WriteLine("---------------------------------------------------");
+                foreach (string place in this.places.OrderBy(x => x))
 				{
-					writer.WriteLine("---------------------------------------------------");
-					writer.WriteLine("---------------------------------------------------");
-					writer.WriteLine(string.Format("{0} ({1})", place, this.ancestors.Values.Where(x => x.BirthPlace == place || x.DiedPlace == place).Count()));
-					writer.WriteLine("---------------------------------------------------");
-					foreach(AncestorIndividual individual in this.ancestors.Values.Where(x => x.BirthPlace == place || x.DiedPlace == place))
-					{
-						writer.WriteLine(AncestryProcessing.GenerateName(this.gedcomIndividuals[individual.Id], true));
-					}
-					writer.WriteLine("");
+                    if (this.ancestors.Values.Where(x => x.BirthCountry == place || (string.IsNullOrEmpty(x.BirthPlace) && x.DiedPlace == place)).Count() > 0)
+                    {
+                        writer.WriteLine(string.Format("{0} ({1})", place, this.ancestors.Values.Where(x => x.BirthCountry == place || (string.IsNullOrEmpty(x.BirthPlace) && x.DiedPlace == place)).Count()));
+                    }
 				}
 			}
 		}
@@ -77,8 +73,12 @@ namespace Ancestry_Reporter.Reports
 				individual.Suffix = gedcomIndividual.Suffix.Trim();
 				individual.Sex = gedcomIndividual.Sex.Trim();
 				individual.BirthDate = gedcomIndividual.BirthDate.Trim();
-				individual.BirthPlace = gedcomIndividual.BirthPlace.Trim();
-				individual.DiedDate = gedcomIndividual.DiedDate.Trim();
+                var birthCountryArr = gedcomIndividual.BirthPlace.Split(new char[] { ',' });
+                individual.BirthCountry = birthCountryArr[birthCountryArr.Length - 1].Trim();
+                individual.BirthPlace = gedcomIndividual.BirthPlace.Trim();
+                var diedCountryArr = gedcomIndividual.DiedPlace.Split(new char[] { ',' });
+                individual.DiedCountry = diedCountryArr[diedCountryArr.Length - 1].Trim();
+                individual.DiedDate = gedcomIndividual.DiedDate.Trim();
 				individual.DiedPlace = gedcomIndividual.DiedPlace.Trim();
 				individual.AppearanceCount = 1;
 				individual.LowestGeneration = depth;

@@ -83,6 +83,62 @@ namespace Ancestry_Reporter.Reports
 			return date;
 		}
 
+        private static double GetYearFromDate(string date)
+        {
+            if (string.IsNullOrEmpty(date))
+                return -1;
+
+            if (date.Contains("AFT") || date.Contains("BEF"))
+                return -1;
+
+            string[] dateArr = date.Split(new char[] { ' ' });
+            double year = 0;
+            Double.TryParse(dateArr[dateArr.Length - 1], out year);
+            if (year == 0)
+                return -1;
+
+            double month = 0;
+
+            date = date.ToUpper();
+            if (date.Contains("JAN"))
+                month = 1;
+            else if (date.Contains("FEB"))
+                month = 2;
+            else if (date.Contains("MAR"))
+                month = 3;
+            else if (date.Contains("APR"))
+                month = 4;
+            else if (date.Contains("MAY"))
+                month = 5;
+            else if (date.Contains("JUN"))
+                month = 6;
+            else if (date.Contains("JUL"))
+                month = 7;
+            else if (date.Contains("AUG"))
+                month = 8;
+            else if (date.Contains("SEP"))
+                month = 9;
+            else if (date.Contains("OCT"))
+                month = 10;
+            else if (date.Contains("NOV"))
+                month = 11;
+            else if (date.Contains("DEC"))
+                month = 12;
+
+            year = year + (month / 12.0);
+
+            return year;
+        }
+
+        public static double CalculateAge(AncestorIndividual individual)
+        {
+            double birthYear = GetYearFromDate(individual.BirthDate);
+            double deathYear = GetYearFromDate(individual.DiedDate);
+            if (birthYear == -1 || deathYear == -1)
+                return -1;
+            return deathYear - birthYear;
+        }
+
 		public static string GenerateBirthDeathDate(AncestorIndividual individual, bool onlyYear)
 		{
 			string born = ProcessDate(individual.BirthDate, onlyYear);

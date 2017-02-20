@@ -17,6 +17,8 @@ namespace Ancestry_Reporter.Reports
         public string MotherId;
         public string BirthPlace;
         public string DiedPlace;
+        public string BirthCountry;
+        public string DiedCountry;
 
         public int LowestGeneration;
         public int HighestGeneration;
@@ -46,6 +48,8 @@ namespace Ancestry_Reporter.Reports
             DiedDate = "";
             BirthPlace = "";
             DiedPlace = "";
+            BirthCountry = "";
+            DiedCountry = "";
             FatherId = "";
             MotherId = "";
             LowestGeneration = 0;
@@ -81,8 +85,10 @@ namespace Ancestry_Reporter.Reports
             writer.Write(Sex);
             writer.Write(BirthDate);
             writer.Write(BirthPlace);
+            writer.Write(BirthCountry);
             writer.Write(DiedDate);
             writer.Write(DiedPlace);
+            writer.Write(DiedCountry);
             writer.Write(FatherId);
             writer.Write(MotherId);
             writer.Write(LowestGeneration);
@@ -131,8 +137,10 @@ namespace Ancestry_Reporter.Reports
             Sex = reader.ReadString();
             BirthDate = reader.ReadString();
             BirthPlace = reader.ReadString();
+            BirthCountry = reader.ReadString();
             DiedDate = reader.ReadString();
             DiedPlace = reader.ReadString();
+            DiedCountry = reader.ReadString();
             FatherId = reader.ReadString();
             MotherId = reader.ReadString();
             LowestGeneration = reader.ReadInt32();

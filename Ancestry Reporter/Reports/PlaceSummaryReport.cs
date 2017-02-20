@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Ancestry_Reporter.Reports
 {
-	public class PlaceReport : IBaseReport
+	public class PlaceSummaryReport : IBaseReport
 	{
 		public Dictionary<string, GedcomIndividual> gedcomIndividuals;
 		public Dictionary<string, GedcomFamily> gedcomFamilies;
@@ -20,7 +20,7 @@ namespace Ancestry_Reporter.Reports
 		private int highestDepth = 0;
 		private int maxDepth = 0;
 
-		public PlaceReport()
+		public PlaceSummaryReport()
 		{
 
 		}
@@ -47,17 +47,10 @@ namespace Ancestry_Reporter.Reports
 				writer.WriteLine(string.Format("Generated on {0}", DateTime.Now.ToShortDateString()));
 				writer.WriteLine(string.Format("Total ancestors in report {0}", ancestors.Count()));
 				writer.WriteLine();
-				foreach(string place in this.places.OrderBy(x => x))
+                writer.WriteLine("---------------------------------------------------");
+                foreach (string place in this.places.OrderBy(x => x))
 				{
-					writer.WriteLine("---------------------------------------------------");
-					writer.WriteLine("---------------------------------------------------");
 					writer.WriteLine(string.Format("{0} ({1})", place, this.ancestors.Values.Where(x => x.BirthPlace == place || x.DiedPlace == place).Count()));
-					writer.WriteLine("---------------------------------------------------");
-					foreach(AncestorIndividual individual in this.ancestors.Values.Where(x => x.BirthPlace == place || x.DiedPlace == place))
-					{
-						writer.WriteLine(AncestryProcessing.GenerateName(this.gedcomIndividuals[individual.Id], true));
-					}
-					writer.WriteLine("");
 				}
 			}
 		}

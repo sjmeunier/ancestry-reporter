@@ -18,9 +18,17 @@ namespace Ancestry_Reporter
 		Descendant,
 		[Description("Ancestor Place Report")]
 		Place,
-		[Description("Shared Y-DNA Report")]
+        [Description("Ancestor Place Summary")]
+        PlaceSummary,
+        [Description("Shared Y-DNA Report")]
 		YDNA,
 		[Description("Shared mt-DNA Report")]
-		MtDNA
-	}
+		MtDNA,
+        [Description("Average Lifespan")]
+        Lifespan,
+        [Description("Country of Origin")]
+        CountryOfOrigin,
+        [Description("Country of Origin Summary")]
+        CountryOfOriginSummary
+    }
 }

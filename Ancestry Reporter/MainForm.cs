@@ -36,9 +36,13 @@ namespace Ancestry_Reporter
 				new { Value = ReportType.GenerationSummary, Text = Extensions.GetDescription<ReportType>(ReportType.GenerationSummary) },
 				new { Value = ReportType.Descendant, Text = Extensions.GetDescription<ReportType>(ReportType.Descendant) },
 				new { Value = ReportType.Place, Text = Extensions.GetDescription<ReportType>(ReportType.Place) },
-				new { Value = ReportType.YDNA, Text = Extensions.GetDescription<ReportType>(ReportType.YDNA) },
-				new { Value = ReportType.MtDNA, Text = Extensions.GetDescription<ReportType>(ReportType.MtDNA) }
-			};
+                new { Value = ReportType.PlaceSummary, Text = Extensions.GetDescription<ReportType>(ReportType.PlaceSummary) },
+                new { Value = ReportType.CountryOfOrigin, Text = Extensions.GetDescription<ReportType>(ReportType.CountryOfOrigin) },
+                new { Value = ReportType.CountryOfOriginSummary, Text = Extensions.GetDescription<ReportType>(ReportType.CountryOfOriginSummary) },
+                new { Value = ReportType.YDNA, Text = Extensions.GetDescription<ReportType>(ReportType.YDNA) },
+				new { Value = ReportType.MtDNA, Text = Extensions.GetDescription<ReportType>(ReportType.MtDNA) },
+                new { Value = ReportType.Lifespan, Text = Extensions.GetDescription<ReportType>(ReportType.Lifespan) }
+            };
 
 			cboReportType.DisplayMember = "Text";
 			cboReportType.ValueMember = "Value";
@@ -124,13 +128,25 @@ namespace Ancestry_Reporter
 				case ReportType.Place:
 					report = new PlaceReport();
 					break;
-				case ReportType.YDNA:
+                case ReportType.PlaceSummary:
+                    report = new PlaceSummaryReport();
+                    break;
+                case ReportType.YDNA:
 					report = new YDNAReport();
 					break;
 				case ReportType.MtDNA:
 					report = new MtDNAReport();
 					break;
-				default:
+                case ReportType.Lifespan:
+                    report = new LifespanReport();
+                    break;
+                case ReportType.CountryOfOrigin:
+                    report = new CountryOfOriginReport();
+                    break;
+                case ReportType.CountryOfOriginSummary:
+                    report = new CountryOfOriginSummaryReport();
+                    break;
+                default:
 					report = new FullAncestryReport();
 					break;
 			}
